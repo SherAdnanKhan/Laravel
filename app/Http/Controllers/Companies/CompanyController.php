@@ -6,9 +6,11 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Company\CreateRequest;
 use App\Http\Requests\Company\ImportRequest;
 use App\Http\Requests\Company\UpdateRequest;
+use Illuminate\Validation\ValidationException;
 
 class CompanyController extends Controller
 {
@@ -77,9 +79,14 @@ class CompanyController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             dd($e);
+            $notification = array(
+                'message' => 'Please only import excel/Xlsx file!',
+                'alert-type' => 'failure'
+            );
+            return back()->with($notification);
         }
         $notification = array(
-            'message' => 'Companies  CSV imported successfully!',
+            'message' => 'Companies file imported successfully!',
             'alert-type' => 'success'
         );
         return back()->with($notification);
@@ -130,6 +137,19 @@ class CompanyController extends Controller
         $company->delete();
     }
 
+    public function getDownload()
+    {
+        //PDF file is stored under project/public/download/info.pdf
+        $file= public_path(). "/First companies.xlsx";
+
+        $headers = array(
+                    'Content-Type: application/xlsx',
+                );
+        return Response::download($file, 'companies.xlsx', $headers);
+
+    }
+
+
     function spreadsheet_to_array($file, $nullValue = null, $calculateFormulas = true, $formatData = false)
     {
         $results = [];
@@ -143,4 +163,5 @@ class CompanyController extends Controller
         unset($spreadsheet);
         return $results;
     }
+
 }

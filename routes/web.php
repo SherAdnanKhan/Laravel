@@ -38,16 +38,12 @@ array_walk($menu, function ($val) {
     }
 });
 
-// Documentations pages
-Route::prefix('documentation')->group(function () {
-    Route::get('getting-started/references', [ReferencesController::class, 'index']);
-    Route::get('getting-started/changelog', [PagesController::class, 'index']);
-});
 Route::get('/companies', [CompanyController::class, 'index']);
 Route::get('import/companies', [CompanyController::class, 'create']);
 Route::post('companies/import', [CompanyController::class, 'import'])->name('company.import');
 Route::post('companies/store', [CompanyController::class, 'store'])->name('company.store');
 Route::post('companies/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');
+Route::get('/download', [CompanyController::class, 'getDownload'])->name('company.download');
 
 Route::middleware('auth')->group(function () {
     // Account pages
