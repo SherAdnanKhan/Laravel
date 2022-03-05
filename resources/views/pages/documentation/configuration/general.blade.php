@@ -26,8 +26,8 @@
 return array(
     // Product
     'product' => array(
-        'name'        => 'Metronic',
-        'description' => 'Metronic - #1 Selling Bootstrap 5 HTML Multi-demo Admin Dashboard Theme',
+        'name'        => 'Hallo',
+        'description' => 'Companies Finder',
         'preview'     => 'https://preview.keenthemes.com/metronic8',
         'purchase'    => 'https://1.envato.market/EA4JP',
         'demos'       => array(...),
