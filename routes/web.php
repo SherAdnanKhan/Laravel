@@ -40,6 +40,7 @@ array_walk($menu, function ($val) {
 
 Route::get('/companies', [CompanyController::class, 'index']);
 Route::get('import/companies', [CompanyController::class, 'create']);
+Route::get('/companies/{company}/delete', [CompanyController::class, 'destroy'])->name('company.delete');
 Route::post('companies/import', [CompanyController::class, 'import'])->name('company.import');
 Route::post('companies/store', [CompanyController::class, 'store'])->name('company.store');
 Route::post('companies/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');

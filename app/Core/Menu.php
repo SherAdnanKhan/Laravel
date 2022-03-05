@@ -432,25 +432,6 @@ class Menu {
      */
     public function getBreadcrumb($options = array()) {
         $breadcrumb = array();
-
-        //$includeHomeLink = true, $homeLink = null
-
-        $this->_buildBreadcrumb($this->items, $breadcrumb, $options);
-
-        $breadcrumb = array_reverse($breadcrumb, true);
-
-        if ( !empty($breadcrumb)) {
-            if ( isset($options['home']) ) {
-                array_unshift($breadcrumb, $options['home']);
-            } else {
-                array_unshift($breadcrumb, array(
-                    'title' => 'Home',
-                    'path' => 'index',
-                    'active' => false
-                ));
-            }
-        }
-
 		return $breadcrumb;
     }
 

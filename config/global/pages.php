@@ -74,7 +74,7 @@ return array(
 
     'log' => array(
         'audit'  => array(
-            'title'  => 'Audit Log',
+            'title'  => 'Companies',
             'assets' => array(
                 'custom' => array(
                     'css' => array(
