@@ -196,7 +196,7 @@ return array(
         //// Dashboard
         array(
             'title'  => 'Companies',
-            'path'   => 'get-companies',
+            'path'   => 'log/audit',
             'bullet' => '<span class="bullet bullet-dot"></span>',
         ),
         array(
