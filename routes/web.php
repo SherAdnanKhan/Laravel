@@ -38,13 +38,6 @@ array_walk($menu, function ($val) {
     }
 });
 
-Route::get('/companies', [CompanyController::class, 'index']);
-Route::get('import/companies', [CompanyController::class, 'create']);
-Route::get('/companies/{company}/delete', [CompanyController::class, 'destroy'])->name('company.delete');
-Route::post('companies/import', [CompanyController::class, 'import'])->name('company.import');
-Route::post('companies/store', [CompanyController::class, 'store'])->name('company.store');
-Route::post('companies/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');
-Route::get('/download', [CompanyController::class, 'getDownload'])->name('company.download');
 
 Route::middleware('auth')->group(function () {
     // Account pages
@@ -54,7 +47,15 @@ Route::middleware('auth')->group(function () {
         Route::put('settings/email', [SettingsController::class, 'changeEmail'])->name('settings.changeEmail');
         Route::put('settings/password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');
     });
-
+    Route::group(['middleware' => ['role:admin']], function () {
+        Route::get('/companies', [CompanyController::class, 'index']);
+        Route::get('import/companies', [CompanyController::class, 'create']);
+        Route::get('/companies/{company}/delete', [CompanyController::class, 'destroy'])->name('company.delete');
+        Route::post('companies/import', [CompanyController::class, 'import'])->name('company.import');
+        Route::post('companies/store', [CompanyController::class, 'store'])->name('company.store');
+        Route::post('companies/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');
+        Route::get('/download', [CompanyController::class, 'getDownload'])->name('company.download');
+    });
     // Logs pages
     Route::prefix('log')->name('log.')->group(function () {
         Route::resource('system', SystemLogsController::class)->only(['index', 'destroy']);
@@ -65,4 +66,4 @@ Route::middleware('auth')->group(function () {
 Route::resource('users', UsersController::class);
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

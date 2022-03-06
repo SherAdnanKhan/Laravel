@@ -18,3 +18,24 @@ if (! function_exists('getModelForGuard')) {
             })->get($guard);
     }
 }
+
+if (! function_exists('setPermissionsTeamId')) {
+    /**
+     * @param int|string|\Illuminate\Database\Eloquent\Model $id
+     *
+     */
+    function setPermissionsTeamId($id)
+    {
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($id);
+    }
+}
+
+if (! function_exists('getPermissionsTeamId')) {
+    /**
+     * @return int|string
+     */
+    function getPermissionsTeamId()
+    {
+        return app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionsTeamId();
+    }
+}

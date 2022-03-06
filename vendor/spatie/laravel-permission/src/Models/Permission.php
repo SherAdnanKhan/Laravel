@@ -18,13 +18,15 @@ class Permission extends Model implements PermissionContract
     use HasRoles;
     use RefreshesPermissionCache;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function __construct(array $attributes = [])
     {
         $attributes['guard_name'] = $attributes['guard_name'] ?? config('auth.defaults.guard');
 
         parent::__construct($attributes);
+
+        $this->guarded[] = $this->primaryKey;
     }
 
     public function getTable()
@@ -53,8 +55,8 @@ class Permission extends Model implements PermissionContract
         return $this->belongsToMany(
             config('permission.models.role'),
             config('permission.table_names.role_has_permissions'),
-            'permission_id',
-            'role_id'
+            PermissionRegistrar::$pivotPermission,
+            PermissionRegistrar::$pivotRole
         );
     }
 
@@ -67,7 +69,7 @@ class Permission extends Model implements PermissionContract
             getModelForGuard($this->attributes['guard_name']),
             'model',
             config('permission.table_names.model_has_permissions'),
-            'permission_id',
+            PermissionRegistrar::$pivotPermission,
             config('permission.column_names.model_morph_key')
         );
     }

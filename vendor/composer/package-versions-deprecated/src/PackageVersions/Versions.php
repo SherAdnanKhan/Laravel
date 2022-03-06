@@ -86,7 +86,7 @@ final class Versions
   'renatomarinho/laravel-page-speed' => '2.0.0@5c807f04831a6ab99fd089c9b83fb3b5a9472d9b',
   'spatie/laravel-activitylog' => '4.3.1@334e7427f5b025d081fb37e9d3ec35854a3438ae',
   'spatie/laravel-package-tools' => '1.10.0@97c24d0bc58e04d55e4a6a7b6d6102cb45b75789',
-  'spatie/laravel-permission' => '4.4.3@779797a47689d0bc1666e26f566cca44603e56fa',
+  'spatie/laravel-permission' => '5.5.1@6c46b4e7dc5445ebb36a44b00ee08d0838f580b0',
   'swiftmailer/swiftmailer' => 'v6.3.0@8a5d5072dca8f48460fce2f4131fcc495eec654c',
   'symfony/console' => 'v5.4.2@a2c6b7ced2eb7799a35375fb9022519282b5405e',
   'symfony/css-selector' => 'v6.0.2@380f86c1a9830226f42a08b5926f18aed4195f25',
@@ -137,8 +137,6 @@ final class Versions
   'doctrine/deprecations' => 'v0.5.3@9504165960a1f83cc1480e2be1dd0a0478561314',
   'doctrine/event-manager' => '1.1.1@41370af6a30faa9dc0368c4a6814d596e81aba7f',
   'doctrine/instantiator' => '1.4.0@d56bf6102915de5702778fe20f2de3b2fe570b5b',
-  'facade/flare-client-php' => '1.9.1@b2adf1512755637d0cef4f7d1b54301325ac78ed',
-  'facade/ignition' => '2.17.4@95c80bd35ee6858e9e1439b2f6a698295eeb2070',
   'facade/ignition-contracts' => '1.0.2@3c921a1cdba35b68a7f0ccffc6dffc1995b18267',
   'fakerphp/faker' => 'v1.17.0@b85e9d44eae8c52cca7aa0939483611f7232b669',
   'filp/whoops' => '2.14.4@f056f1fe935d9ed86e698905a957334029899895',
@@ -182,9 +180,13 @@ final class Versions
   'sebastian/version' => '3.0.2@c6c1022351a901512170118436c764e473f6de8c',
   'seld/jsonlint' => '1.8.3@9ad6ce79c342fbd44df10ea95511a1b24dee5b57',
   'seld/phar-utils' => '1.2.0@9f3452c93ff423469c0d56450431562ca423dcee',
+  'spatie/backtrace' => '1.2.1@4ee7d41aa5268107906ea8a4d9ceccde136dbd5b',
+  'spatie/flare-client-php' => '1.0.5@8ada1e5f4d7a2869f491c5e75d1f689b69db423e',
+  'spatie/ignition' => '1.2.1@090518ff676e17a038dfe77490018363ff66af20',
+  'spatie/laravel-ignition' => '1.0.6@d349854331789aba9205fd755e0c1d1934ef1463',
   'symfony/filesystem' => 'v6.0.0@52b3c9cce673b014915445a432339f282e002ce6',
   'theseer/tokenizer' => '1.2.1@34a41e998c2183e22995f158c581e7b5e755ab9e',
-  'keenthemes/metronic-laravel' => 'dev-master@bff715100cfd307ae78562e8e77ab83fbd6ec967',
+  'keenthemes/metronic-laravel' => 'dev-master@7d3deb482d3f5903509cee78d2e505fe60451cbb',
 );
 
     private function __construct()
