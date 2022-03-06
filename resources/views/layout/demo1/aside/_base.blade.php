@@ -22,7 +22,7 @@
     {{--begin::Brand--}}
     <div class="aside-logo flex-column-auto" id="kt_aside_logo">
         {{--begin::Logo--}}
-        <a href="{{ theme()->getPageUrl('companies') }}">
+        <a href="{{ theme()->getPageUrl('log/audit') }}">
             <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/' . $logoFileName) }}" style="color:white" class="h-65px logo"/>
         </a>
         {{--end::Logo--}}

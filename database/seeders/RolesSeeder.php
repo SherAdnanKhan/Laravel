@@ -27,7 +27,7 @@ class RolesSeeder extends Seeder
     {
         return [
             ['name' => 'admin'],
-            ['name' => 'editor'],
+            ['name' => 'user'],
         ];
     }
 }
