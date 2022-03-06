@@ -11,6 +11,7 @@ use App\Http\Requests\Company\CreateRequest;
 use App\Http\Requests\Company\ImportRequest;
 use App\Http\Requests\Company\UpdateRequest;
 use Illuminate\Validation\ValidationException;
+use DataTables;
 
 class CompanyController extends Controller
 {
@@ -23,7 +24,76 @@ class CompanyController extends Controller
     {
         $info = auth()->user()->info;
         return view('pages.account.companies.create', compact('info'));
+    }
 
+    public function getCompanies(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Company::select('*');
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->filter(function ($instance) use ($request) {
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == '' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == 'CE' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->CE%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == '' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == 'CE' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                            ->orWhere('certification', 'LIKE', "%$request->CE%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == '' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                            ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == 'CE' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->CE%")
+                            ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == 'CE' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                                ->orWhere('certification', 'LIKE', "%$request->CE%")
+                                ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+
+
+                    if (!empty($request->get('search'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $search = $request->get('search');
+                            $w->orWhere('manufacture', 'LIKE', "%$search%")
+                                ->orWhere('number_of_employeer', 'LIKE', "%$search%")
+                                ->orWhere('country', 'LIKE', "%$search%")
+                                ->orWhere('property', 'LIKE', "%$search%")
+                                ->orWhere('certification', 'LIKE', "%$search%")
+                                ->orWhere('main_market', 'LIKE', "%$search%")
+                                ->orWhere('contact_link', 'LIKE', "%$search%")
+                                ->orWhere('distance', 'LIKE', "%$search%");
+                        });
+                    }
+                })
+                ->rawColumns(['certificate'])
+                ->make(true);
+        }
+
+        return view('pages.log.audit.index');
     }
 
     /**
@@ -142,13 +212,12 @@ class CompanyController extends Controller
     public function getDownload()
     {
         //PDF file is stored under project/public/download/info.pdf
-        $file= public_path(). "/First companies.xlsx";
+        $file = public_path() . "/First companies.xlsx";
 
         $headers = array(
-                    'Content-Type: application/xlsx',
-                );
+            'Content-Type: application/xlsx',
+        );
         return Response::download($file, 'companies.xlsx', $headers);
-
     }
 
 
@@ -165,5 +234,4 @@ class CompanyController extends Controller
         unset($spreadsheet);
         return $results;
     }
-
 }

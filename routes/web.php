@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/download', [CompanyController::class, 'getDownload'])->name('company.download');
     });
     // Logs pages
+    Route::get('/get-companies', [CompanyController::class, 'getCompanies'])->name('get-companies');;
     Route::prefix('log')->name('log.')->group(function () {
         Route::resource('system', SystemLogsController::class)->only(['index', 'destroy']);
         Route::resource('audit', AuditLogsController::class)->only(['index', 'destroy']);
