@@ -4,6 +4,11 @@
         <div class="card-body">
             <div class="row">
                 <div class="d-flex align-items-center mt-3">
+                    <label class="form-check form-check-inline form-check-solid me-5">
+                        <span class="fw-bold ps-2 fs-6">
+                            Certifications:
+                        </span>
+                    </label>
                     <!--begin::Option-->
                     <label class="form-check form-check-inline form-check-solid me-5">
                         <input class="form-check-input" id="ISO9001" name="ISO9001" type="checkbox" value="ISO9001">
