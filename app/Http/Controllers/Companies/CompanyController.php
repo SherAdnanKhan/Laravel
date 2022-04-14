@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Companies;
 
+use DataTables;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Company\CreateRequest;
 use App\Http\Requests\Company\ImportRequest;
 use App\Http\Requests\Company\UpdateRequest;
 use Illuminate\Validation\ValidationException;
-use DataTables;
-
+use Auth;
 class CompanyController extends Controller
 {
+    public $role;
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +30,12 @@ class CompanyController extends Controller
 
     public function getCompanies(Request $request)
     {
+        $this->role= Auth::user()->getRoleNames()->toArray();
         if ($request->ajax()) {
+            
             $data = Company::select('*');
             return Datatables::of($data)
+           
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
                     if ($request->ISO9001 == 'ISO9001' && $request->CE == '' && $request->ETL == '') {
@@ -73,37 +78,178 @@ class CompanyController extends Controller
                                 ->orWhere('certification', 'LIKE', "%$request->ETL%");
                         });
                     }
-
-
+                    if ($request->distance == 'veryclose') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->Where('distance','>=',0)->Where('distance','<=',1000);
+                        });
+                    }
+                    elseif ($request->distance == 'ineurope') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->Where('distance','>=',0)->Where('distance','<=',2300);
+                        });
+                    }
+                    if ($request->distance == 'worldwide') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->select('disatance');
+                        });
+                    }
                     if (!empty($request->get('search'))) {
                         $instance->where(function ($w) use ($request) {
                             $search = $request->get('search');
-                            $w->orWhere('manufacture', 'LIKE', "%$search%")
-                                ->orWhere('number_of_employeer', 'LIKE', "%$search%")
-                                ->orWhere('country', 'LIKE', "%$search%")
-                                ->orWhere('property', 'LIKE', "%$search%")
-                                ->orWhere('certification', 'LIKE', "%$search%")
-                                ->orWhere('main_market', 'LIKE', "%$search%")
-                                ->orWhere('contact_link', 'LIKE', "%$search%")
-                                ->orWhere('distance', 'LIKE', "%$search%");
+                            $w->orWhere('products', 'LIKE', "%{$search}%")
+                            ->orWhere('manufacture', 'LIKE', "%{$search}%")
+                                ->orWhere('number_of_employeer', 'LIKE', "%{$search}%")
+                                ->orWhere('country', 'LIKE', "%{$search}%")
+                                ->orWhere('property', 'LIKE', "%{$search}%")
+                                ->orWhere('certification', 'LIKE', "%{$search}%")
+                                ->orWhere('main_market', 'LIKE', "%{$search}%")
+                                ->orWhere('contact_link', 'LIKE', "%{$search}%")
+                                ->orWhere('distance', 'LIKE', "%{$search}%");
+                        });
+                    }
+                    if (!empty($request->get('products'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $products = $request->get('products');
+                            $w->orWhere('products', 'LIKE', "%{$products}%");
+                        });
+                    }
+                    if (!empty($request->get('country'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $country = $request->get('country');
+                            $w->orWhere('country', 'LIKE', "%{$country}%");
                         });
                     }
                 })
                 ->rawColumns(['certificate'])
-                ->make(true);
+                ->addColumn('news', function($w) {
+                  return $w->news;
+                })
+                ->rawColumns(['news'])
+                ->addColumn('action', function($w){
+                    if (in_array('admin',$this->role)) {
+                    $btn = '<a href="'. route("company.edit",$w->id) .'" class="edit btn btn-primary btn-sm">Edit</a>';
+                    $btn .= '<a href="'. route("company.delete",$w->id) .'" class="edit btn btn-danger btn-sm">Delete</a>';
+                    }
+                    else{
+                        $btn="";
+                    }
+                    return $btn;
+                    
+                     })
+             ->rawColumns(['action'])
+             ->make(true);
+               
         }
 
         return view('pages.log.audit.index');
     }
+    public function guestCompany(Request $request){
+        if ($request->ajax()) {
+            
+            $data = Company::select('*');
+          
+            return Datatables::of($data)
+           
+                ->addIndexColumn()
+                ->filter(function ($instance) use ($request) {
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == '' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == 'CE' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->CE%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == '' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == 'CE' && $request->ETL == '') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                            ->orWhere('certification', 'LIKE', "%$request->CE%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == '' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                            ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == '' && $request->CE == 'CE' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->CE%")
+                            ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->ISO9001 == 'ISO9001' && $request->CE == 'CE' && $request->ETL == 'ETL') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->orWhere('certification', 'LIKE', "%$request->ISO9001%")
+                                ->orWhere('certification', 'LIKE', "%$request->CE%")
+                                ->orWhere('certification', 'LIKE', "%$request->ETL%");
+                        });
+                    }
+                    if ($request->distance == 'veryclose') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->Where('distance','>=',0)->Where('distance','<=',1000);
+                        });
+                    }
+                    elseif ($request->distance == 'ineurope') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->Where('distance','>=',0)->Where('distance','<=',2300);
+                        });
+                    }
+                    if ($request->distance == 'worldwide') {
+                        $instance->where(function ($w) use ($request) {
+                            $w->select('disatance');
+                        });
+                    }
+                    if (!empty($request->get('search'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $search = $request->get('search');
+                            $w->orWhere('products', 'LIKE', "%{$search}%")
+                            ->orWhere('manufacture', 'LIKE', "%{$search}%")
+                                ->orWhere('number_of_employeer', 'LIKE', "%{$search}%")
+                                ->orWhere('country', 'LIKE', "%{$search}%")
+                                ->orWhere('property', 'LIKE', "%{$search}%")
+                                ->orWhere('certification', 'LIKE', "%{$search}%")
+                                ->orWhere('main_market', 'LIKE', "%{$search}%")
+                                ->orWhere('contact_link', 'LIKE', "%{$search}%")
+                                ->orWhere('distance', 'LIKE', "%{$search}%");
+                        });
+                    }
+                    if (!empty($request->get('products'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $products = $request->get('products');
+                            $w->orWhere('products', 'LIKE', "%{$products}%");
+                        });
+                    }
+                    if (!empty($request->get('country'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $country = $request->get('country');
+                            $w->orWhere('country', 'LIKE', "%{$country}%");
+                        });
+                    }
+                })
+                ->rawColumns(['certificate'])
+                ->addColumn('news', function($w) {
+                    return $w->news;
+                  })
+                  ->rawColumns(['news'])
+              ->make(true);
+               
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+        return view('pages.log.audit.guest');
+    }
+  
     public function create()
     {
         $info = auth()->user()->info;
+
         return view('pages.account.companies.settings', compact('info'));
     }
 
@@ -114,8 +260,11 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(CreateRequest $request)
-    {
-        Company::create($request->validated());
+    { 
+        $validated=$request->validated();
+        $validated['news']= $request->news ;
+      
+        Company::create($validated);
         $notification = array(
             'message' => 'Company created successfully!',
             'alert-type' => 'success'
@@ -179,21 +328,31 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($draw)
     {
-        //
+       $companies=Company::where('id',$draw)->first();
+       return view('pages.account.companies.edit',get_defined_vars());
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateRequest $request, Company $company)
+    public function update(Request $request,$id)
     {
-        $company->update($request->validated());
+        // dd($request->all());
+       Company::where('id',$id)->update([
+        'manufacture' =>$request->manufacture,
+        'products' => $request->products,
+        'number_of_employeer' =>$request->number_of_employeer,
+        'country' => $request->country,
+        'property' =>$request->property,
+        'certification' => $request->certification,
+        'main_market' =>$request->main_market,
+        'contact_link' => $request->contact_link,
+        'distance' => $request->distance,
+       ]);
+       $notification = array(
+        'message' => 'Company updated successfully!',
+        'alert-type' => 'success'
+    );
+       return redirect()->back()->with($notification);
     }
 
     /**
@@ -202,11 +361,13 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Company $company)
+   
+    public function destroy($id)
     {
-        $company->delete();
+                  
+        $company=Company::where('id',$id)->delete();
 
-        return redirect('log/audit');
+        return redirect()->back();
     }
 
     public function getDownload()
@@ -234,4 +395,17 @@ class CompanyController extends Controller
         unset($spreadsheet);
         return $results;
     }
+    public function getProductkey(Request $request){
+        $data=$request->get_data;
+        $b=Company::where('products', 'LIKE', "%$data%")->first();
+        if(is_null($b)){
+            return '';
+        }
+        else
+        {
+            
+            return $b->extra_info;
+        }
+    }
+ 
 }

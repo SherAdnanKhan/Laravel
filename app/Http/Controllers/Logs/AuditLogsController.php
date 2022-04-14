@@ -16,7 +16,7 @@ class AuditLogsController extends Controller
      */
     public function index(CompaniesDataTable $dataTable)
     {
-        return $dataTable->render('pages.log.audit.index');
+        return $dataTable->render('pages.log.audit.new-index');
     }
 
     /**

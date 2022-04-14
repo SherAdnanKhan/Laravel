@@ -33,6 +33,7 @@ class CreateRequest extends FormRequest
             'main_market' => 'required|string',
             'contact_link' => 'required|string',
             'distance' => 'required|string',
+            'extra_info'=>'required|string',
         ];
     }
 }

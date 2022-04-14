@@ -23,7 +23,9 @@ class CreateCompaniesTable extends Migration
             $table->string('certification')->nullable();
             $table->string('main_market')->nullable();
             $table->string('contact_link')->nullable();
-            $table->string('distance')->nullable();
+            $table->bigInteger('distance')->nullable();
+            $table->string('extra_info')->nullable();
+            $table->string('news')->nullable();
             $table->timestamps();
         });
     }
