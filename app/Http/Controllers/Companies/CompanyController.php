@@ -347,6 +347,8 @@ class CompanyController extends Controller
         'main_market' =>$request->main_market,
         'contact_link' => $request->contact_link,
         'distance' => $request->distance,
+        'extra_info'=>$request->extra_info,
+        'news'=>$request->news,
        ]);
        $notification = array(
         'message' => 'Company updated successfully!',

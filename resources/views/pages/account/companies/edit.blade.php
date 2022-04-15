@@ -165,6 +165,37 @@
                         <!--end::Col-->
                     </div>
                     <!--end::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">
+                            <span class="required">{{ __('Extra Info') }}</span>
+
+                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
+                                title="{{ __('Extra Info') }}"></i>
+                        </label>
+                        <!--end::Label-->
+
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" name="extra_info" class="form-control form-control-lg form-control-solid"
+                                placeholder="Extra Information" value="{{ old('extra_info', $companies->extra_info ?? '') }}" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-bold fs-6">
+                            <span>{{ __('News') }}</span>
+                        </label>
+                        <!--end::Label-->
+
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" name="news" class="form-control form-control-lg form-control-solid"
+                                placeholder="news" value="{{ old('news', $companies->news ?? '') }}" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
                 </div>
                 <!--end::Card body-->
 
